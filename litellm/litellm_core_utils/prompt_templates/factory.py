@@ -4713,18 +4713,16 @@ class BedrockConverseMessagesProcessor:
 
         candidates: Final = (model, get_bedrock_base_model(model))
         for candidate in candidates:
-            if candidate is None:
-                continue
             try:
-                model_info: Final = litellm.get_model_info(model=candidate, custom_llm_provider="bedrock")
-                supports_reasoning: Final = model_info.get("supports_reasoning")
+                model_info = litellm.get_model_info(model=candidate, custom_llm_provider="bedrock")
+                supports_reasoning = model_info.get("supports_reasoning")
                 if supports_reasoning is False:
                     return False
                 if supports_reasoning is True:
                     return True
             except Exception:  # noqa: BLE001  # unmapped models raise ModelNotMappedError
                 pass
-            entry: Final = litellm.model_cost.get(candidate)
+            entry = litellm.model_cost.get(candidate)
             if isinstance(entry, dict):
                 if entry.get("supports_reasoning") is False:
                     return False
